@@ -1,0 +1,108 @@
+.tasks-page .task-card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.tasks-page .task-card > .row {
+  align-items: flex-start;
+}
+.tasks-page .task-card > .row > .check-button {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 9px;
+}
+.tasks-page .task-card > .row > .check-button.checked {
+  background: var(--green);
+  color: #fff;
+}
+.tasks-page .task-content h3 {
+  margin-bottom: 9px;
+}
+.tasks-page .task-content .muted {
+  margin-top: 8px;
+}
+.tasks-page .task-card .list-row {
+  min-height: 48px;
+}
+.tasks-page .task-card .stack {
+  gap: 12px;
+}
+.tasks-page .focus-modal .focus-card {
+  padding: 20px;
+  margin: 22px 0;
+  text-align: left;
+}
+.tasks-page .focus-modal .focus-card h3 {
+  font-size: 1.35rem;
+}
+.checklists-page .checklist-toggle {
+  width: 100%;
+  height: auto;
+  min-height: 56px;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 14px 0;
+  font-size: 1rem;
+  border-radius: 0;
+  font-weight: 500;
+}
+.checklists-page .checklist-toggle > .check-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 27px;
+  height: 27px;
+  border: 1.5px solid #8b9f91;
+  border-radius: 8px;
+}
+.checklists-page .checklist-toggle.is-complete > .check-icon {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+.checklists-page .checklist-toggle > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.checklists-page .checklist-toggle > .muted {
+  font-size: 0.8rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.checklists-page .checklist-toggle.is-complete > span:nth-child(2) {
+  color: var(--muted);
+}
+.checklists-page > .card > h2 {
+  margin-bottom: 14px;
+}
+.checklists-page .list-row {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  .tasks-page .task-card {
+    padding: 18px;
+  }
+  .tasks-page .task-card > .row {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tasks-page .task-content {
+    flex-basis: calc(100% - 54px) !important;
+  }
+  .tasks-page .task-card > .row > .row {
+    margin-left: auto;
+  }
+  .tasks-page .task-card .actions {
+    justify-content: flex-start;
+  }
+  .tasks-page .focus-modal .focus-card {
+    padding: 16px;
+  }
+  .checklists-page .checklist-toggle > .muted {
+    font-size: 0.73rem;
+  }
+}
