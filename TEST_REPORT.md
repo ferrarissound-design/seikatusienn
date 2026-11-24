@@ -14,13 +14,13 @@
 
 確認した原因は、GitHub Pagesの標準Jekyllビルドが成功扱いになっていた一方、React/Viteの本番ビルドが行われず、`/src/main.tsx`を参照する元のHTMLが公開されていたことです。GitHub Pagesのサブパス`/seikatusienn/`に対してルート絶対パスを使用していた点も修正対象です。
 
-`.github/workflows/pages.yml`で`main`をテスト・ビルドし、`dist`をPagesの成果物として配信するよう変更します。設定のSourceはAPI上で既にGitHub Actions（`build_type: workflow`）であることを確認済みです。設定を変えず、専用ワークフローを追加して本番ビルドを配信します。修復版の配信結果・URL応答・実画面確認は、実際の実行結果を確認してから追記します。ワークフローを用意しただけで公開成功とは扱いません。
+`.github/workflows/pages.yml`で`main`をテスト・ビルドし、`dist`をPagesの成果物として配信するよう変更します。設定のSourceはAPI上で既にGitHub Actions（`build_type: workflow`）であることを確認済みです。設定を変えず、専用ワークフローを追加して本番ビルドを配信します。修復版はPR #2でmainへ反映済みです。GitHub Actionsの [Deploy GitHub Pages](https://github.com/ferrarissound-design/seikatusienn/actions/runs/45367373258) は build/deploy とも成功し、同じコミットのQuality checksも成功しました。公開URLからビルド済みHTML、JavaScript/CSSの正しいMIMEタイプ、Manifest・アイコン、SW、全プリキャッシュ対象の計15URLを取得し、すべてHTTP 200を確認しました。開発用 `/src/main.tsx` の参照もありません。HTTPでの配信検証であり、ブラウザー実表示・操作やiPhone実機の検証とは区別します。
 
 サブパス設定・Manifest識別子・SWのキャッシュ範囲・オフライン用シェルに8件の回帰テストを追加しました。端末内のDBは変更・削除しません。
 
 GitHub ActionsでSQL試験が一度だけ起動時に失敗する原因も調査しました。初期化中の一時PostgreSQLサーバーをUnix socketで準備完了と誤判定し、そのサーバーの終了直後に接続していました。最終サーバーのTCP待受を待って接続するよう修正し、新しいDockerコンテナーでSQL/RLS全試験を再実行して成功しました。
 
-共有ブラウザーも起動時に `gaas-browser node_repl sandbox cannot be disabled` となったため、実画面の操作は未検証です。公開後はHTTPでHTMLと静的アセットの配信を確認します。
+共有ブラウザーも起動時に `gaas-browser node_repl sandbox cannot be disabled` となったため、実画面の操作は未検証です。公開後のHTTPによるHTMLと静的アセットの配信検証は成功しました。
 
 この変更で有料プランの契約や課金設定の変更は行いません。
 
@@ -84,7 +84,7 @@ IndexedDBの模擬環境で合格しても、iOSによるデータ保持やRLS�
 
 ## 開発段階
 
-Phase 1〜4のコードと、Phase 5の自動試験・説明書を作成しました。外部サービス設定と実機・ブラウザー検証が残っているため、**全フェーズの品質検証が完了した状態とは扱いません**。初期開発時には本番公開を行っていませんでした。現在は既存のGitHub Pages公開URLの表示修復を進めています。有料契約・実利用者データでの試験は行っていません。
+Phase 1〜4のコードと、Phase 5の自動試験・説明書を作成しました。外部サービス設定と実機・ブラウザー検証が残っているため、**全フェーズの品質検証が完了した状態とは扱いません**。初期開発時には本番公開を行っていませんでした。既存のGitHub Pages公開URLの配信を修復し、HTTPによる生成物の配信を確認済みです。有料契約・実利用者データでの試験は行っていません。
 
 未実装は、閉じたアプリへのWeb Push配信・サーバースケジューラーです。アプリ内リマインダーは手動で内容・日付・時刻を設定し、ホーム画面で確認します。銀行・カード直接連携は初期要件どおり含めません。
 
