@@ -18,6 +18,7 @@ jobs:
         run: npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --types node --skipLibCheck playwright.config.ts e2e/life-partner.spec.ts
       - run: npm test
       - run: npm run build
+      - run: node scripts/verify-build.mjs
   sql-tests:
     runs-on: ubuntu-latest
     permissions:

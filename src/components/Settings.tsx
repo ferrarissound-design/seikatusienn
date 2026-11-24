@@ -190,10 +190,14 @@ export function Settings(props: SettingsProps) {
           "クラウド接続が未設定です。ローカルモードはそのまま利用できます。",
         );
       if (!email.trim()) throw new Error("メールアドレスを入力してください");
+      const authRedirectTo = new URL(
+        import.meta.env.BASE_URL,
+        window.location.origin,
+      ).href;
       if (mode === "reset") {
         const { error } = await supabase.auth.resetPasswordForEmail(
           email.trim(),
-          { redirectTo: window.location.origin },
+          { redirectTo: authRedirectTo },
         );
         if (error) throw error;
         notify("再設定の案内をメールで送信しました");
@@ -210,7 +214,7 @@ export function Settings(props: SettingsProps) {
           : await supabase.auth.signUp({
               email: email.trim(),
               password,
-              options: { emailRedirectTo: window.location.origin },
+              options: { emailRedirectTo: authRedirectTo },
             });
       if (result.error) throw result.error;
       setPassword("");

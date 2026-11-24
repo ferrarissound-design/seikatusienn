@@ -1,5 +1,15 @@
 # 変更履歴
 
+## 0.1.1 — GitHub Pages表示修復
+
+- GitHub Pagesで開発用HTMLがそのまま配信され、アプリが起動しない原因を修正。
+- `main`のテスト・Viteビルド後に`dist`を配信するPagesワークフローを追加。
+- `/seikatusienn/`への配信に合わせ、アセット・Manifest・Service Workerのベースパスに対応。
+- 既存のGitHub Pages URLを修復する設定手順を追加。Vercel対応も維持。
+- 有料プランの契約や課金設定の変更は行わない。
+
+配信・動作確認の結果は`TEST_REPORT.md`に記載します。
+
 ## 0.1.0 — 2026-11-24
 
 - `seikatusienn`にLife Partnerの初期実装を追加。

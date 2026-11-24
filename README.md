@@ -4,6 +4,14 @@
 
 React / TypeScript / Vite / Dexie（IndexedDB）/ Supabase。iPhoneのSafariからホーム画面に追加して使用でき、Androidにも対応する設計です。医療上の診断・治療を目的としません。
 
+## Web版の公開先
+
+https://ferrarissound-design.github.io/seikatusienn/
+
+GitHub Pagesでは、`.github/workflows/pages.yml`が`main`のコードをテスト・ビルドし、`dist`だけを公開します。リポジトリ名のサブパス`/seikatusienn/`に対応しています。GitHubのSettings → Pages → Sourceは**GitHub Actions**にしてください。元のTypeScriptソースをそのまま公開する「Deploy from a branch」では起動できません。
+
+GitHub Pagesへの配信確認と残る実機項目は[TEST_REPORT.md](TEST_REPORT.md)、iPhoneからの設定方法は[DEPLOYMENT.md](DEPLOYMENT.md)を参照してください。
+
 ## 開発
 
 Node.js 24を使用します。
@@ -34,7 +42,7 @@ bash supabase/tests/run.sh
 
 **時刻指定Web Pushのサーバースケジューラーは未実装です。** アプリを開いている際の通知案内を代替手段とします。アプリを閉じた状態で指定時刻に届く通知は保証しません。iPhone実機確認もクラウド環境からは実施できません。実施済みと未検証の区別は[TEST_REPORT.md](TEST_REPORT.md)に記載します。
 
-有料サービスの契約・本番公開は行っていません。Vercelでの公開前に利用者自身の承認・設定が必要です。
+この変更では有料サービスの契約・課金設定の変更を行いません。既存のGitHub Pages公開先の表示を修復する配信構成を含みます。Vercelでの新規公開には利用者自身の承認・設定が必要です。
 
 ## ドキュメント
 
