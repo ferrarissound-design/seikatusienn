@@ -1,6 +1,6 @@
 # テスト報告
 
-対象: Life Partner 0.1.0 / `ferrarissound-design/seikatusienn`。架空データを使用します。
+対象: Life Partner 0.1.1 / `ferrarissound-design/seikatusienn`。架空データを使用します。
 
 ## 状態の意味
 
@@ -8,9 +8,25 @@
 - **実装済み・未検証**: コードはあるが実サービス・実機条件の確認が必要なもの。
 - **未実装**: コードに含めていないもの。
 
+## GitHub Pagesの表示不具合と修復
+
+対象URL: https://ferrarissound-design.github.io/seikatusienn/
+
+確認した原因は、GitHub Pagesの標準Jekyllビルドが成功扱いになっていた一方、React/Viteの本番ビルドが行われず、`/src/main.tsx`を参照する元のHTMLが公開されていたことです。GitHub Pagesのサブパス`/seikatusienn/`に対してルート絶対パスを使用していた点も修正対象です。
+
+`.github/workflows/pages.yml`で`main`をテスト・ビルドし、`dist`をPagesの成果物として配信するよう変更します。設定のSourceはAPI上で既にGitHub Actions（`build_type: workflow`）であることを確認済みです。設定を変えず、専用ワークフローを追加して本番ビルドを配信します。修復版の配信結果・URL応答・実画面確認は、実際の実行結果を確認してから追記します。ワークフローを用意しただけで公開成功とは扱いません。
+
+サブパス設定・Manifest識別子・SWのキャッシュ範囲・オフライン用シェルに8件の回帰テストを追加しました。端末内のDBは変更・削除しません。
+
+GitHub ActionsでSQL試験が一度だけ起動時に失敗する原因も調査しました。初期化中の一時PostgreSQLサーバーをUnix socketで準備完了と誤判定し、そのサーバーの終了直後に接続していました。最終サーバーのTCP待受を待って接続するよう修正し、新しいDockerコンテナーでSQL/RLS全試験を再実行して成功しました。
+
+共有ブラウザーも起動時に `gaas-browser node_repl sandbox cannot be disabled` となったため、実画面の操作は未検証です。公開後はHTTPでHTMLと静的アセットの配信を確認します。
+
+この変更で有料プランの契約や課金設定の変更は行いません。
+
 ## 自動試験・ビルド
 
-2026-11-24、Node.js 24で `npm test` の **8ファイル・70テストがすべて成功**しました。`npm run build`（TypeScript検査を含む）も成功しました。SQL試験は一時的なPostgreSQL 17で実行しています。
+2026-11-24、Node.js 24で `npm test` の **9ファイル・78テストがすべて成功**しました。`npm run build`（TypeScript検査を含む）も成功しました。ルート配信 `/` と `VITE_BASE_PATH=/seikatusienn/` の両方でビルドし、`node scripts/verify-build.mjs` で開発用エントリーの混入・ファイル参照・Manifest・オフライン用シェルを検査しました。SQL試験は一時的なPostgreSQL 17で実行しています。
 
 | 対象 | 状態 | 確認方法 |
 | --- | --- | --- |
@@ -68,7 +84,7 @@ IndexedDBの模擬環境で合格しても、iOSによるデータ保持やRLS�
 
 ## 開発段階
 
-Phase 1〜4のコードと、Phase 5の自動試験・説明書を作成しました。外部サービス設定と実機・ブラウザー検証が残っているため、**全フェーズの品質検証が完了した状態とは扱いません**。本番公開・有料契約・実利用者データでの試験は行っていません。
+Phase 1〜4のコードと、Phase 5の自動試験・説明書を作成しました。外部サービス設定と実機・ブラウザー検証が残っているため、**全フェーズの品質検証が完了した状態とは扱いません**。初期開発時には本番公開を行っていませんでした。現在は既存のGitHub Pages公開URLの表示修復を進めています。有料契約・実利用者データでの試験は行っていません。
 
 未実装は、閉じたアプリへのWeb Push配信・サーバースケジューラーです。アプリ内リマインダーは手動で内容・日付・時刻を設定し、ホーム画面で確認します。銀行・カード直接連携は初期要件どおり含めません。
 

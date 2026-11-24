@@ -1,0 +1,71 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Pages公開は1件ずつ進めます。進行中の公開は途中で取り消しません。
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  build:
+    # 手動実行でも公開対象はmainのみ。PRのコードは公開しません。
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      # 未設定なら空文字となり、アカウント不要のローカルモードで動作します。
+      # 公開用キーだけを使用。service_roleやsecret keyを設定しないでください。
+      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Determine Pages base path
+        id: base
+        shell: bash
+        run: |
+          repository_name="${GITHUB_REPOSITORY#*/}"
+          repository_owner="${GITHUB_REPOSITORY%/*}"
+          if [[ "${repository_name,,}" == "${repository_owner,,}.github.io" ]]; then
+            echo 'path=/' >> "$GITHUB_OUTPUT"
+          else
+            echo "path=/${repository_name}/" >> "$GITHUB_OUTPUT"
+          fi
+      - run: npm ci
+      - run: npm test
+      - name: Build PWA for GitHub Pages
+        run: npm run build
+        env:
+          VITE_BASE_PATH: ${{ steps.base.outputs.path }}
+      - name: Verify compiled entry and PWA paths
+        run: node scripts/verify-build.mjs
+        env:
+          VITE_BASE_PATH: ${{ steps.base.outputs.path }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - name: Deploy built application
+        id: deployment
+        uses: actions/deploy-pages@v4
